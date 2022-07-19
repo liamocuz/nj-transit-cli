@@ -2,3 +2,4 @@
 .idea
 *.zip
 rail-data
+__pycache__
