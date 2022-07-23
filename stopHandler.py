@@ -17,7 +17,7 @@ class Stop:
 class StopHandler(TransitHandler):
     def __init__(self, path: str):
         super().__init__(path)
-        self.dictionary = self.buildDictionary()
+        self.dictionary = self.buildDictionary
 
     def buildDictionary(self) -> dict:
         """Builds a dictionary mapping stop_ids and stop_names to a Stop class"""
@@ -26,9 +26,9 @@ class StopHandler(TransitHandler):
         STOP_NAME_INDEX = 2
 
         for row in self.dataframe.values:
-            newStop = Stop(*row)
-            dictionary[row[STOP_ID_INDEX]] = newStop
-            dictionary[row[STOP_NAME_INDEX].lower()] = newStop
+            new_stop = Stop(*row)
+            dictionary[row[STOP_ID_INDEX]] = new_stop
+            dictionary[row[STOP_NAME_INDEX].lower()] = new_stop
 
         return dictionary
 
