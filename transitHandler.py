@@ -2,7 +2,6 @@ from abc import ABC, abstractmethod
 import pandas
 
 
-
 class TransitHandler(ABC):
     """Parent class for importing information from NJ Transit text files"""
     def __init__(self, path: str):
@@ -22,4 +21,5 @@ class TransitHandler(ABC):
 
     @abstractmethod
     def buildDictionary(self):
+        """Populates a dictionary, mapping key(s) from the dataframe to the info dataclass"""
         pass
