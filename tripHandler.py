@@ -21,6 +21,7 @@ class TripHandler(TransitHandler):
         self.dictionary = self.buildDictionary()
 
     def buildDictionary(self) -> dict:
+        """Builds a dictionary mapping route_id and trip_id to a Trip class"""
         dictionary = dict()
         ROUTE_ID_INDEX = 0
         TRIP_ID_INDEX = 2

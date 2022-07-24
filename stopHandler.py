@@ -17,7 +17,7 @@ class Stop:
 class StopHandler(TransitHandler):
     def __init__(self, path: str):
         super().__init__(path)
-        self.dictionary = self.buildDictionary
+        self.dictionary = self.buildDictionary()
 
     def buildDictionary(self) -> dict:
         """Builds a dictionary mapping stop_ids and stop_names to a Stop class"""

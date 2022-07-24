@@ -5,6 +5,7 @@ import requests
 import zipfile
 from stopHandler import StopHandler
 from tripHandler import TripHandler
+from stopTimeHandler import StopTimeHandler
 
 
 def getRailData(url: str, save_path: str = "./rail-data.zip", extract_path: str = "./rail-data") -> bool:
@@ -55,4 +56,6 @@ if __name__ == "__main__":
     trip_handler = TripHandler("./rail-data/trips.txt")
     print(trip_handler.dataframe)
 
+    stop_time_handler = StopTimeHandler("./rail-data/trips.txt")
+    print(trip_handler.dataframe)
     sys.exit(0)
