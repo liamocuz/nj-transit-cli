@@ -4,6 +4,7 @@ from dataclasses import dataclass
 
 @dataclass
 class Route:
+    """Class for representing each route"""
     route_id: int
     agency_id: str
     route_short_name: str
@@ -14,12 +15,13 @@ class Route:
 
 
 class RouteHandler(TransitHandler):
-    """"""
+    """Loads info from the routes.txt file"""
     def __init__(self, path):
         super().__init__(path)
         self.dictionary = self.buildDictionary()
 
     def buildDictionary(self):
+        """Builds a dictionary mapping route_id to a Route class"""
         dictionary = dict()
         ROUTE_ID_INDEX = 0
 
@@ -28,4 +30,3 @@ class RouteHandler(TransitHandler):
             dictionary[row[ROUTE_ID_INDEX]] = new_route
 
         return dictionary
-

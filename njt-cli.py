@@ -67,5 +67,4 @@ if __name__ == "__main__":
     route_handler = RouteHandler(rail_data_extract_path + "routes.txt")
     print(route_handler.dataframe)
 
-
     sys.exit(0)

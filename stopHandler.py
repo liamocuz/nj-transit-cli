@@ -15,6 +15,7 @@ class Stop:
 
 
 class StopHandler(TransitHandler):
+    """Loads info from the stops.txt file"""
     def __init__(self, path: str):
         super().__init__(path)
         self.dictionary = self.buildDictionary()

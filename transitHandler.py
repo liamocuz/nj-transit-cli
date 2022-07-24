@@ -21,4 +21,5 @@ class TransitHandler(ABC):
 
     @abstractmethod
     def buildDictionary(self):
+        """Populates a dictionary, mapping key(s) from the dataframe to the info dataclass"""
         pass

@@ -15,7 +15,7 @@ class Trip:
 
 
 class TripHandler(TransitHandler):
-    """Class for loading in data from ./rail-data/trips.txt"""
+    """Loads info from the trips.txt file"""
     def __init__(self, path: str):
         super().__init__(path)
         self.dictionary = self.buildDictionary()

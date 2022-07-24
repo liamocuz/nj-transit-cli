@@ -4,6 +4,7 @@ from dataclasses import dataclass
 
 @dataclass
 class StopTime:
+    """Class for representing the stop times for each station"""
     trip_id: int
     arrival_time: str
     departure_time: str
@@ -15,7 +16,7 @@ class StopTime:
 
 
 class StopTimeHandler(TransitHandler):
-    """"""
+    """Loads info from the stop_times.txt file"""
     def __init__(self, path: str):
         super().__init__(path)
         self.dictionary = self.buildDictionary()
