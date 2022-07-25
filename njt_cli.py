@@ -14,7 +14,7 @@ from stop_time_handler import StopTimeHandler
 from route_handler import RouteHandler
 
 
-def get_rail_data(url: str, save_path: str, extract_path: str) -> bool:
+def get_rail_data(url: str, zip_path: str, extract_path: str) -> bool:
     """
     Downloads and writes rail data to the current directory if it does not already exist
     First downloads the .zip file from NJ Transit and then expands the file into a subdirectory
@@ -29,11 +29,11 @@ def get_rail_data(url: str, save_path: str, extract_path: str) -> bool:
         response = requests.get(url, allow_redirects=True)
 
         # Write data from memory to zip file in /tmp/njt/
-        with open(save_path, 'wb') as file:
+        with open(zip_path, 'wb') as file:
             file.write(response.content)
 
         # Extract zip file
-        with zipfile.ZipFile(save_path, 'r') as rail_data:
+        with zipfile.ZipFile(zip_path, 'r') as rail_data:
             rail_data.extractall(extract_path)
     except (FileNotFoundError, PermissionError) as error:
         print(error)
