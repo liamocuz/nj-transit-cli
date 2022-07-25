@@ -13,6 +13,7 @@ STOP_ID_INDEX = 3
 @dataclass
 class StopTime:
     """Class for representing the stop times for each station"""
+    # pylint: disable=too-many-instance-attributes
     trip_id: int
     arrival_time: str
     departure_time: str

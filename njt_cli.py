@@ -42,7 +42,7 @@ def get_rail_data(url: str, save_path: str, extract_path: str) -> bool:
     return True
 
 
-# TODO
+# TODO # pylint: disable=fixme
 #   1. Create an args parser for different flags
 #   2. Figure out how we want the cli to work, is it just going to be a single input or multiple
 #   2.1 Multiple will need some sort of dfs to find best route between two
