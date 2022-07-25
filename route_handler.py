@@ -12,6 +12,7 @@ ROUTE_ID_INDEX = 0
 @dataclass
 class Route:
     """Class for representing each route"""
+    # pylint: disable=too-many-instance-attributes
     route_id: int
     agency_id: str
     route_short_name: str
