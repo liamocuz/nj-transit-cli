@@ -6,15 +6,15 @@ This is the main file for the njt-cli project
 
 import sys
 import os
-import requests
 import zipfile
-from stopHandler import StopHandler
-from tripHandler import TripHandler
-from stopTimeHandler import StopTimeHandler
-from routeHandler import RouteHandler
+import requests
+from stop_handler import StopHandler
+from trip_handler import TripHandler
+from stop_time_handler import StopTimeHandler
+from route_handler import RouteHandler
 
 
-def getRailData(url: str, save_path: str, extract_path: str) -> bool:
+def get_rail_data(url: str, save_path: str, extract_path: str) -> bool:
     """
     Downloads and writes rail data to the current directory if it does not already exist
     First downloads the .zip file from NJ Transit and then expands the file into a subdirectory
@@ -35,8 +35,8 @@ def getRailData(url: str, save_path: str, extract_path: str) -> bool:
         # Extract zip file
         with zipfile.ZipFile(save_path, 'r') as rail_data:
             rail_data.extractall(extract_path)
-    except Exception as e:
-        print(e)
+    except Exception as error:
+        print(error)
         return False
 
     return True
@@ -51,25 +51,25 @@ def getRailData(url: str, save_path: str, extract_path: str) -> bool:
 # Input should be like ./transit <from name> <to name>
 
 if __name__ == "__main__":
-    rail_data_url = "https://content.njtransit.com/public/developers-resources/rail_data.zip"
-    rail_data_zip_path = "/tmp/njt/rail-data.zip"
-    rail_data_extract_path = "/tmp/njt/rail-data/"
+    RAIL_DATA_URL = "https://content.njtransit.com/public/developers-resources/rail_data.zip"
+    ZIP_PATH = "/tmp/njt/rail-data.zip"
+    DIRECTORY_PATH = "/tmp/njt/rail-data/"
 
-    # if not getRailData(rail_data_url, rail_data_zip_path, rail_data_extract_path):
+    # if not get_rail_data(rail_data_url, rail_data_zip_path, rail_data_extract_path):
     #     print("Unable to download rail data")
     #     sys.exit(1)
 
-    stop_handler = StopHandler(rail_data_extract_path + "stops.txt")
+    stop_handler = StopHandler(DIRECTORY_PATH + "stops.txt")
     print(stop_handler.dataframe)
     print(stop_handler.getStopByName("Manasquan"))
 
-    trip_handler = TripHandler(rail_data_extract_path + "trips.txt")
+    trip_handler = TripHandler(DIRECTORY_PATH + "trips.txt")
     print(trip_handler.dataframe)
 
-    stop_time_handler = StopTimeHandler(rail_data_extract_path + "stop_times.txt")
+    stop_time_handler = StopTimeHandler(DIRECTORY_PATH + "stop_times.txt")
     print(stop_time_handler.dataframe)
 
-    route_handler = RouteHandler(rail_data_extract_path + "routes.txt")
+    route_handler = RouteHandler(DIRECTORY_PATH + "routes.txt")
     print(route_handler.dataframe)
 
     sys.exit(0)
