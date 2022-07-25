@@ -61,7 +61,7 @@ if __name__ == "__main__":
 
     stop_handler = StopHandler(DIRECTORY_PATH + "stops.txt")
     print(stop_handler.dataframe)
-    print(stop_handler.getStopByName("Manasquan"))
+    print(stop_handler.get_stop_by_name("Manasquan"))
 
     trip_handler = TripHandler(DIRECTORY_PATH + "trips.txt")
     print(trip_handler.dataframe)
