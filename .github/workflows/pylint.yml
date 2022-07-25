@@ -22,4 +22,5 @@ jobs:
         pip install pandas
     - name: Analysing the code with pylint
       run: |
+        pylint --generate-rcfile ${HOME}/.pylintrc
         pylint $(git ls-files '*.py')
