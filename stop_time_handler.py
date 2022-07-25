@@ -3,7 +3,7 @@ This file creates the StopTime and StopTimeHandler classes
 It is designed to import and handle the data from rail-data/stops.txt file
 """
 from dataclasses import dataclass
-from transit_handler import TransitHandler
+from data_handler import DataHandler
 
 # Index constants to map info to dataclass object
 TRIP_ID_INDEX = 0
@@ -24,7 +24,7 @@ class StopTime:
     shape_dist_traveled: float
 
 
-class StopTimeHandler(TransitHandler):
+class StopTimeHandler(DataHandler):
     """Loads info from the stop_times.txt file"""
     def __init__(self, path: str):
         super().__init__(path)

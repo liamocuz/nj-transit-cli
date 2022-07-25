@@ -3,7 +3,7 @@ This file creates the Trip and TripHandler classes
 It is designed to import and handle the data from rail-data/trips.txt file
 """
 from dataclasses import dataclass
-from transit_handler import TransitHandler
+from data_handler import DataHandler
 
 # Index constants to map info to dataclass object
 ROUTE_ID_INDEX = 0
@@ -22,7 +22,7 @@ class Trip:
     shape_id: int
 
 
-class TripHandler(TransitHandler):
+class TripHandler(DataHandler):
     """Loads info from the trips.txt file"""
     def __init__(self, path: str):
         super().__init__(path)

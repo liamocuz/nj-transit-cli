@@ -5,7 +5,7 @@ from abc import ABC, abstractmethod
 import pandas
 
 
-class TransitHandler(ABC):
+class DataHandler(ABC):
     """Parent class for importing information from NJ Transit text files"""
     def __init__(self, path: str):
         self.dataframe = self.get_dataframe(path)

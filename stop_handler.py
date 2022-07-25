@@ -3,7 +3,7 @@ This file creates the Stop and StopHandler classes
 It is designed to import and handle the data from rail-data/stops.txt file
 """
 from dataclasses import dataclass
-from transit_handler import TransitHandler
+from data_handler import DataHandler
 
 # Index constants to map info to dataclass object
 STOP_ID_INDEX = 0
@@ -22,7 +22,7 @@ class Stop:
     zone_id: str
 
 
-class StopHandler(TransitHandler):
+class StopHandler(DataHandler):
     """Loads info from the stops.txt file"""
     def __init__(self, path: str):
         super().__init__(path)
