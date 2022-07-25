@@ -55,7 +55,7 @@ if __name__ == "__main__":
     ZIP_PATH = "/tmp/njt/rail-data.zip"
     DIRECTORY_PATH = "/tmp/njt/rail-data/"
 
-    # if not get_rail_data(rail_data_url, rail_data_zip_path, rail_data_extract_path):
+    # if not get_rail_data(RAIL_DATA_URL, ZIP_PATH, DIRECTORY_PATH):
     #     print("Unable to download rail data")
     #     sys.exit(1)
 
