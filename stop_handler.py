@@ -1,5 +1,13 @@
-from transitHandler import TransitHandler
+"""
+This file creates the Stop and StopHandler classes
+It is designed to import and handle the data from rail-data/stops.txt file
+"""
 from dataclasses import dataclass
+from transit_handler import TransitHandler
+
+# Index constants to map info to dataclass object
+STOP_ID_INDEX = 0
+STOP_NAME_INDEX = 2
 
 
 @dataclass
@@ -18,13 +26,11 @@ class StopHandler(TransitHandler):
     """Loads info from the stops.txt file"""
     def __init__(self, path: str):
         super().__init__(path)
-        self.dictionary = self.buildDictionary()
+        self.dictionary = self.build_dictionary()
 
-    def buildDictionary(self) -> dict:
+    def build_dictionary(self) -> dict:
         """Builds a dictionary mapping stop_ids and stop_names to a Stop class"""
-        dictionary = dict()
-        STOP_ID_INDEX = 0
-        STOP_NAME_INDEX = 2
+        dictionary = {}
 
         for row in self.dataframe.values:
             new_stop = Stop(*row)
@@ -33,8 +39,10 @@ class StopHandler(TransitHandler):
 
         return dictionary
 
-    def getStopByName(self, stop_name: str) -> Stop:
+    def get_stop_by_name(self, stop_name: str) -> Stop:
+        """Returns the Stop object given its string name"""
         return self.dictionary[stop_name.lower()]
 
-    def getStopById(self, stop_id: int) -> Stop:
+    def get_stop_by_id(self, stop_id: int) -> Stop:
+        """Returns the Stop object given its stop id"""
         return self.dictionary[stop_id]

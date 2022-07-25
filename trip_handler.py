@@ -1,5 +1,13 @@
-from transitHandler import TransitHandler
+"""
+This file creates the Trip and TripHandler classes
+It is designed to import and handle the data from rail-data/trips.txt file
+"""
 from dataclasses import dataclass
+from transit_handler import TransitHandler
+
+# Index constants to map info to dataclass object
+ROUTE_ID_INDEX = 0
+TRIP_ID_INDEX = 2
 
 
 @dataclass
@@ -18,13 +26,11 @@ class TripHandler(TransitHandler):
     """Loads info from the trips.txt file"""
     def __init__(self, path: str):
         super().__init__(path)
-        self.dictionary = self.buildDictionary()
+        self.dictionary = self.build_dictionary()
 
-    def buildDictionary(self) -> dict:
+    def build_dictionary(self) -> dict:
         """Builds a dictionary mapping route_id and trip_id to a Trip class"""
-        dictionary = dict()
-        ROUTE_ID_INDEX = 0
-        TRIP_ID_INDEX = 2
+        dictionary = {}
 
         for row in self.dataframe.values:
             new_trip = Trip(*row)
