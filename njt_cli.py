@@ -1,4 +1,9 @@
 #!/usr/local/bin/python3
+
+"""
+This is the main file for the njt-cli project
+"""
+
 import sys
 import os
 import requests
@@ -38,10 +43,10 @@ def getRailData(url: str, save_path: str, extract_path: str) -> bool:
 
 
 # TODO
-# 1. Create an args parser for different flags
-# 2. Figure out how we want the cli to work, is it just going to be a single input or multiple
-# 2.1 Multiple will need some sort of dfs to find best route between two
-# 3. Fix the way downloading works
+#   1. Create an args parser for different flags
+#   2. Figure out how we want the cli to work, is it just going to be a single input or multiple
+#   2.1 Multiple will need some sort of dfs to find best route between two
+#   3. Fix the way downloading works
 
 # Input should be like ./transit <from name> <to name>
 
