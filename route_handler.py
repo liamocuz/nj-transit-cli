@@ -5,6 +5,9 @@ It is designed to import and handle the data from rail-data/routes.txt file
 from dataclasses import dataclass
 from transit_handler import TransitHandler
 
+# Index constants to map info to dataclass object
+ROUTE_ID_INDEX = 0
+
 
 @dataclass
 class Route:
@@ -26,8 +29,6 @@ class RouteHandler(TransitHandler):
 
     def build_dictionary(self):
         """Builds a dictionary mapping route_id to a Route class"""
-        ROUTE_ID_INDEX = 0
-
         dictionary = {}
 
         for row in self.dataframe.values:

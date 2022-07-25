@@ -5,6 +5,10 @@ It is designed to import and handle the data from rail-data/trips.txt file
 from dataclasses import dataclass
 from transit_handler import TransitHandler
 
+# Index constants to map info to dataclass object
+ROUTE_ID_INDEX = 0
+TRIP_ID_INDEX = 2
+
 
 @dataclass
 class Trip:
@@ -26,9 +30,6 @@ class TripHandler(TransitHandler):
 
     def build_dictionary(self) -> dict:
         """Builds a dictionary mapping route_id and trip_id to a Trip class"""
-        ROUTE_ID_INDEX = 0
-        TRIP_ID_INDEX = 2
-
         dictionary = {}
 
         for row in self.dataframe.values:

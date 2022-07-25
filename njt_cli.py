@@ -35,7 +35,7 @@ def get_rail_data(url: str, save_path: str, extract_path: str) -> bool:
         # Extract zip file
         with zipfile.ZipFile(save_path, 'r') as rail_data:
             rail_data.extractall(extract_path)
-    except Exception as error:
+    except (FileNotFoundError, PermissionError) as error:
         print(error)
         return False
 
