@@ -14,7 +14,7 @@ DIRECTORY_PATH = "/tmp/njt/rail-data/"
 
 
 class TransitHandler:
-    """This class handles getting information from all data sources to construct routes and stop info"""
+    """This class handles importing data sources to construct routes and stop info"""
 
     def __init__(self):
         self.stops = StopHandler(DIRECTORY_PATH + "stops.txt")
@@ -33,14 +33,15 @@ class TransitHandler:
 
         trip_info = self.build_time_info(valid_stop_times)
 
-        for key in trip_info:
-            if key.lower() == station_name.lower():
+        for headsign, station_info in trip_info.items():
+            # Don't need to print times for the current station
+            if headsign.lower() == station_name.lower():
                 continue
-            print(key)
-            trip_info[key].sort(key=lambda x: x.arrival_time)
-            for stop_time in trip_info[key]:
-                print(stop_time.arrival_time)
-            print()
+            print(headsign)
+            station_info.sort(key=lambda x: x.departure_time)
+            for stop_time in station_info:
+                print(stop_time.departure_time)
+            print('\n')
 
     def filter_trips(self, stop_times: dict, service_ids: set) -> list:
         """Filters the trips and returns a list of valid StopTime objects"""
@@ -61,6 +62,3 @@ class TransitHandler:
             trip_info[headsign].append(stop_time)
 
         return trip_info
-
-    def get_route_info(self, route_name: str):
-        pass

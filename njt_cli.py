@@ -7,6 +7,7 @@ This is the main file for the njt-cli project
 import sys
 import os
 import zipfile
+from datetime import datetime
 import requests
 from transit_handler import TransitHandler
 
@@ -39,6 +40,10 @@ def get_rail_data(url: str, zip_path: str, extract_path: str) -> bool:
     return True
 
 
+def get_today_date() -> str:
+    """Returns today's date in the form YYYYMMDD"""
+    return datetime.today().strftime("%Y%m%d")
+
 # TODO # pylint: disable=fixme
 #   1. Create an args parser for different flags
 #   2. Figure out how we want the cli to work, is it just going to be a single input or multiple
@@ -47,7 +52,9 @@ def get_rail_data(url: str, zip_path: str, extract_path: str) -> bool:
 #   4. Filter times based upon current time of day
 #   5. Implement a trie when incomplete stops are put in
 
-# Input should be like ./transit <from name> <to name>
+# Input should be like ./transit <from name> <to name> <date> -> prints list of time
+# For single station ./njt <station name> <date> -> prints arrival times per headsign
+
 
 if __name__ == "__main__":
     RAIL_DATA_URL = "https://content.njtransit.com/public/developers-resources/rail_data.zip"
@@ -60,6 +67,6 @@ if __name__ == "__main__":
             sys.exit(1)
 
     transit = TransitHandler()
-    transit.get_station_info("NEW YORK PENN STATION", transit.calendar.get_today_date())
+    transit.get_station_info("Manasquan", get_today_date())
 
     sys.exit(0)

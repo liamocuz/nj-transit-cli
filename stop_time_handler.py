@@ -39,4 +39,5 @@ class StopTimeHandler(DataHandler):
         return dictionary
 
     def get_trips(self, stop_id: int):
+        """Returns the trips that are mapped to a stop_id"""
         return self.dictionary[stop_id]

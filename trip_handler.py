@@ -35,11 +35,13 @@ class TripHandler(DataHandler):
         return dictionary
 
     def is_valid_trip(self, trip_id: int, service_ids: set[int]):
+        """Given a trip id and service_ids, find if the trip has one of those service_ids"""
         trip = self.dictionary[trip_id]
         return trip.service_id in service_ids
 
     def get_headsign(self, trip_id: int) -> str:
+        """Returns the headsign of a trip"""
         if trip_id in self.dictionary:
             return self.dictionary[trip_id].trip_headsign
-        else:
-            raise KeyError
+
+        raise KeyError

@@ -4,7 +4,6 @@ It is designed to import and handle the data from rail-data/calendar_dates.txt f
 """
 from dataclasses import dataclass
 from data_handler import DataHandler
-from datetime import datetime
 
 
 @dataclass
@@ -22,7 +21,7 @@ class CalendarHandler(DataHandler):
         self.dictionary = self.build_dictionary()
 
     def build_dictionary(self) -> dict:
-        """Builds a dictionary mapping calendar date to a dictionary mapping service ids to a Calendar class"""
+        """Builds a dict mapping a date to a dict mapping service_ids to a Calendar class"""
         dictionary = {}
 
         for row in self.dataframe.values:
@@ -35,10 +34,7 @@ class CalendarHandler(DataHandler):
         return dictionary
 
     def get_service_ids(self, date: str) -> set:
+        """Returns a set of service_ids given a date"""
         calendars = self.dictionary[date]
         service_ids = set(calendars.keys())
         return service_ids
-
-    @staticmethod
-    def get_today_date() -> str:
-        return datetime.today().strftime("%Y%m%d")
