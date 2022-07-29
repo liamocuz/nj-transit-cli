@@ -3,10 +3,7 @@ This file creates the Route and RouteHandler classes
 It is designed to import and handle the data from rail-data/routes.txt file
 """
 from dataclasses import dataclass
-from transit_handler import TransitHandler
-
-# Index constants to map info to dataclass object
-ROUTE_ID_INDEX = 0
+from data_handler import DataHandler
 
 
 @dataclass
@@ -21,7 +18,7 @@ class Route:
     route_color: str
 
 
-class RouteHandler(TransitHandler):
+class RouteHandler(DataHandler):
     """Loads info from the routes.txt file"""
     def __init__(self, path):
         super().__init__(path)
@@ -33,6 +30,6 @@ class RouteHandler(TransitHandler):
 
         for row in self.dataframe.values:
             new_route = Route(*row)
-            dictionary[row[ROUTE_ID_INDEX]] = new_route
+            dictionary[new_route.route_id] = new_route
 
         return dictionary

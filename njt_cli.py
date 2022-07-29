@@ -7,14 +7,12 @@ This is the main file for the njt-cli project
 import sys
 import os
 import zipfile
+from datetime import datetime
 import requests
-from stop_handler import StopHandler
-from trip_handler import TripHandler
-from stop_time_handler import StopTimeHandler
-from route_handler import RouteHandler
+from transit_handler import TransitHandler
 
 
-def get_rail_data(url: str, save_path: str, extract_path: str) -> bool:
+def get_rail_data(url: str, zip_path: str, extract_path: str) -> bool:
     """
     Downloads and writes rail data to the current directory if it does not already exist
     First downloads the .zip file from NJ Transit and then expands the file into a subdirectory
@@ -29,11 +27,11 @@ def get_rail_data(url: str, save_path: str, extract_path: str) -> bool:
         response = requests.get(url, allow_redirects=True)
 
         # Write data from memory to zip file in /tmp/njt/
-        with open(save_path, 'wb') as file:
+        with open(zip_path, 'wb') as file:
             file.write(response.content)
 
         # Extract zip file
-        with zipfile.ZipFile(save_path, 'r') as rail_data:
+        with zipfile.ZipFile(zip_path, 'r') as rail_data:
             rail_data.extractall(extract_path)
     except (FileNotFoundError, PermissionError) as error:
         print(error)
@@ -42,34 +40,33 @@ def get_rail_data(url: str, save_path: str, extract_path: str) -> bool:
     return True
 
 
+def get_today_date() -> str:
+    """Returns today's date in the form YYYYMMDD"""
+    return datetime.today().strftime("%Y%m%d")
+
 # TODO # pylint: disable=fixme
 #   1. Create an args parser for different flags
 #   2. Figure out how we want the cli to work, is it just going to be a single input or multiple
 #   2.1 Multiple will need some sort of dfs to find best route between two
 #   3. Fix the way downloading works
+#   4. Filter times based upon current time of day
+#   5. Implement a trie when incomplete stops are put in
 
-# Input should be like ./transit <from name> <to name>
+# Input should be like ./transit <from name> <to name> <date> -> prints list of time
+# For single station ./njt <station name> <date> -> prints arrival times per headsign
+
 
 if __name__ == "__main__":
     RAIL_DATA_URL = "https://content.njtransit.com/public/developers-resources/rail_data.zip"
     ZIP_PATH = "/tmp/njt/rail-data.zip"
     DIRECTORY_PATH = "/tmp/njt/rail-data/"
 
-    # if not get_rail_data(RAIL_DATA_URL, ZIP_PATH, DIRECTORY_PATH):
-    #     print("Unable to download rail data")
-    #     sys.exit(1)
+    if not os.path.exists(DIRECTORY_PATH):
+        if not get_rail_data(RAIL_DATA_URL, ZIP_PATH, DIRECTORY_PATH):
+            print("Unable to download rail data")
+            sys.exit(1)
 
-    stop_handler = StopHandler(DIRECTORY_PATH + "stops.txt")
-    print(stop_handler.dataframe)
-    print(stop_handler.get_stop_by_name("Manasquan"))
-
-    trip_handler = TripHandler(DIRECTORY_PATH + "trips.txt")
-    print(trip_handler.dataframe)
-
-    stop_time_handler = StopTimeHandler(DIRECTORY_PATH + "stop_times.txt")
-    print(stop_time_handler.dataframe)
-
-    route_handler = RouteHandler(DIRECTORY_PATH + "routes.txt")
-    print(route_handler.dataframe)
+    transit = TransitHandler()
+    transit.get_station_info("Manasquan", get_today_date())
 
     sys.exit(0)
