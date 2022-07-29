@@ -24,7 +24,7 @@ class TransitHandler:
         self.calendar = CalendarHandler(DIRECTORY_PATH + "calendar_dates.txt")
 
     def get_station_info(self, station_name: str, date: str):
-        """Returns the arrival times for a station stop per headsign for given date"""
+        """Prints the arrival times for a station stop per headsign for given date"""
         stop_id: int = self.stops.get_stop_by_name(station_name).stop_id
         service_ids: set = self.calendar.get_service_ids(date)
 
@@ -34,10 +34,13 @@ class TransitHandler:
         trip_info = self.build_time_info(valid_stop_times)
 
         for key in trip_info:
+            if key.lower() == station_name.lower():
+                continue
             print(key)
             trip_info[key].sort(key=lambda x: x.arrival_time)
             for stop_time in trip_info[key]:
                 print(stop_time.arrival_time)
+            print()
 
     def filter_trips(self, stop_times: dict, service_ids: set) -> list:
         """Filters the trips and returns a list of valid StopTime objects"""
