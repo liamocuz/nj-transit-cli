@@ -4,10 +4,7 @@ It is designed to import and handle the data from rail-data/calendar_dates.txt f
 """
 from dataclasses import dataclass
 from data_handler import DataHandler
-
-# Index constants to map info to dataclass object
-SERVICE_ID_INDEX = 0
-DATE_INDEX = 1
+from datetime import datetime
 
 
 @dataclass
@@ -30,8 +27,18 @@ class CalendarHandler(DataHandler):
 
         for row in self.dataframe.values:
             new_stop = Calendar(*row)
-            if row[DATE_INDEX] not in dictionary:
-                dictionary[row[DATE_INDEX]] = {}
-            dictionary[row[DATE_INDEX]][row[SERVICE_ID_INDEX]] = new_stop
+            new_stop.date = str(new_stop.date)
+            if new_stop.date not in dictionary:
+                dictionary[new_stop.date] = {}
+            dictionary[new_stop.date][new_stop.service_id] = new_stop
 
         return dictionary
+
+    def get_service_ids(self, date: str) -> set:
+        calendars = self.dictionary[date]
+        service_ids = set(calendars.keys())
+        return service_ids
+
+    @staticmethod
+    def get_today_date() -> str:
+        return datetime.today().strftime("%Y%m%d")
