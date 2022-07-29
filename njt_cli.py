@@ -8,10 +8,7 @@ import sys
 import os
 import zipfile
 import requests
-from stop_handler import StopHandler
-from trip_handler import TripHandler
-from stop_time_handler import StopTimeHandler
-from route_handler import RouteHandler
+from transit_handler import TransitHandler
 
 
 def get_rail_data(url: str, zip_path: str, extract_path: str) -> bool:
@@ -47,6 +44,8 @@ def get_rail_data(url: str, zip_path: str, extract_path: str) -> bool:
 #   2. Figure out how we want the cli to work, is it just going to be a single input or multiple
 #   2.1 Multiple will need some sort of dfs to find best route between two
 #   3. Fix the way downloading works
+#   4. Filter times based upon current time of day
+#   5. Implement a trie when incomplete stops are put in
 
 # Input should be like ./transit <from name> <to name>
 
@@ -55,21 +54,12 @@ if __name__ == "__main__":
     ZIP_PATH = "/tmp/njt/rail-data.zip"
     DIRECTORY_PATH = "/tmp/njt/rail-data/"
 
-    # if not get_rail_data(RAIL_DATA_URL, ZIP_PATH, DIRECTORY_PATH):
-    #     print("Unable to download rail data")
-    #     sys.exit(1)
+    if not os.path.exists(DIRECTORY_PATH):
+        if not get_rail_data(RAIL_DATA_URL, ZIP_PATH, DIRECTORY_PATH):
+            print("Unable to download rail data")
+            sys.exit(1)
 
-    stop_handler = StopHandler(DIRECTORY_PATH + "stops.txt")
-    print(stop_handler.dataframe)
-    print(stop_handler.get_stop_by_name("Manasquan"))
-
-    trip_handler = TripHandler(DIRECTORY_PATH + "trips.txt")
-    print(trip_handler.dataframe)
-
-    stop_time_handler = StopTimeHandler(DIRECTORY_PATH + "stop_times.txt")
-    print(stop_time_handler.dataframe)
-
-    route_handler = RouteHandler(DIRECTORY_PATH + "routes.txt")
-    print(route_handler.dataframe)
+    transit = TransitHandler()
+    transit.get_station_info("NEW YORK PENN STATION", transit.calendar.get_today_date())
 
     sys.exit(0)
