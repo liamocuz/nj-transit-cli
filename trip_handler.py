@@ -25,7 +25,7 @@ class TripHandler(DataHandler):
         self.dictionary = self.build_dictionary()
 
     def build_dictionary(self) -> dict:
-        """Builds a dictionary mapping and trip_id to a Trip class"""
+        """Builds a dictionary mapping trip_id to a Trip class"""
         dictionary = {}
 
         for row in self.dataframe.values:
@@ -33,3 +33,13 @@ class TripHandler(DataHandler):
             dictionary[new_trip.trip_id] = new_trip
 
         return dictionary
+
+    def is_valid_trip(self, trip_id: int, service_ids: set[int]):
+        trip = self.dictionary[trip_id]
+        return trip.service_id in service_ids
+
+    def get_headsign(self, trip_id: int) -> str:
+        if trip_id in self.dictionary:
+            return self.dictionary[trip_id].trip_headsign
+        else:
+            raise KeyError

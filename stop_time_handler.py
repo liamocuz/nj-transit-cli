@@ -37,3 +37,6 @@ class StopTimeHandler(DataHandler):
             dictionary[new_stop_time.stop_id][new_stop_time.trip_id] = new_stop_time
 
         return dictionary
+
+    def get_trips(self, stop_id: int):
+        return self.dictionary[stop_id]
