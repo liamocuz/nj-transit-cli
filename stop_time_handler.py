@@ -5,10 +5,6 @@ It is designed to import and handle the data from rail-data/stops.txt file
 from dataclasses import dataclass
 from data_handler import DataHandler
 
-# Index constants to map info to dataclass object
-TRIP_ID_INDEX = 0
-STOP_ID_INDEX = 3
-
 
 @dataclass
 class StopTime:
@@ -31,12 +27,13 @@ class StopTimeHandler(DataHandler):
         self.dictionary = self.build_dictionary()
 
     def build_dictionary(self) -> dict:
-        """Builds a dictionary mapping trip_id and stop_id to a StopTime class"""
+        """ Builds a dictionary mapping stop_id to a dictionary of trip_ids to a StopTime object """
         dictionary = {}
 
         for row in self.dataframe.values:
             new_stop_time = StopTime(*row)
-            dictionary[row[TRIP_ID_INDEX]] = new_stop_time
-            dictionary[row[STOP_ID_INDEX]] = new_stop_time
+            if new_stop_time.stop_id not in dictionary:
+                dictionary[new_stop_time.stop_id] = {}
+            dictionary[new_stop_time.stop_id][new_stop_time.trip_id] = new_stop_time
 
         return dictionary
