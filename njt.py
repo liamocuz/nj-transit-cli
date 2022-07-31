@@ -1,4 +1,4 @@
-#!/usr/local/opt/python@3.10/bin
+#!/usr/local/opt/python@3.10/bin/python3
 
 """
 This is the main file for the njt-cli project
