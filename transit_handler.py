@@ -25,6 +25,12 @@ class TransitHandler:
 
     def get_station_info(self, station_name: str, date: str):
         """Prints the arrival times for a station stop per headsign for given date"""
+
+        if station_name.lower() not in self.stops.dictionary:
+            print(f"Unable to find the stop name \"{station_name}\". "
+                  f"Are you missing a space? Stop names with spaces in them must be surrounded in quotes.")
+            return
+
         stop_id: int = self.stops.get_stop_by_name(station_name).stop_id
         service_ids: set = self.calendar.get_service_ids(date)
 
@@ -33,15 +39,16 @@ class TransitHandler:
 
         trip_info = self.build_time_info(valid_stop_times)
 
+        print(f"From {station_name.upper()} on {date}\n")
         for headsign, station_info in trip_info.items():
             # Don't need to print times for the current station
             if headsign.lower() == station_name.lower():
                 continue
-            print(headsign)
+            print(f"To {headsign}")
             station_info.sort(key=lambda x: x.departure_time)
             for stop_time in station_info:
                 print(stop_time.departure_time)
-            print('\n')
+            print()
 
     def filter_trips(self, stop_times: dict, service_ids: set) -> list:
         """Filters the trips and returns a list of valid StopTime objects"""
