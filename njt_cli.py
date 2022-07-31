@@ -7,6 +7,7 @@ This is the main file for the njt-cli project
 import sys
 import os
 import zipfile
+import argparse
 from datetime import datetime
 import requests
 from transit_handler import TransitHandler
@@ -61,12 +62,28 @@ if __name__ == "__main__":
     ZIP_PATH = "/tmp/njt/rail-data.zip"
     DIRECTORY_PATH = "/tmp/njt/rail-data/"
 
-    if not os.path.exists(DIRECTORY_PATH):
+    parser = argparse.ArgumentParser(description="print out departure times for a rail stop")
+    parser.add_argument("stop_name",
+                        metavar="stop_name",
+                        help="rail stop name. If the name has spaces, surround the name in quotes")
+    parser.add_argument("-d",
+                        "--date",
+                        default=get_today_date(),
+                        nargs='?',
+                        help="the date of the departure times in a YYYYMMDD format")
+    parser.add_argument("-r",
+                        "--refresh",
+                        action="store_true",
+                        help="force a download the NJ Transit Rail Data")
+    args = parser.parse_args()
+
+    if not os.path.exists(DIRECTORY_PATH) or args.refresh:
+        print("Downloading NJ Transit Rail Data")
         if not get_rail_data(RAIL_DATA_URL, ZIP_PATH, DIRECTORY_PATH):
             print("Unable to download rail data")
             sys.exit(1)
 
     transit = TransitHandler()
-    transit.get_station_info("Manasquan", get_today_date())
+    transit.get_station_info(args.stop_name, args.date)
 
     sys.exit(0)
