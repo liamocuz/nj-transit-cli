@@ -49,9 +49,8 @@ def get_today_date() -> str:
 #   1. Create an args parser for different flags
 #   2. Figure out how we want the cli to work, is it just going to be a single input or multiple
 #   2.1 Multiple will need some sort of dfs to find best route between two
-#   3. Fix the way downloading works
-#   4. Filter times based upon current time of day
-#   5. Implement a trie when incomplete stops are put in
+#   3. Filter times based upon current time of day
+#   4. Implement a trie when incomplete stops are put in
 
 # Input should be like ./transit <from name> <to name> <date> -> prints list of time
 # For single station ./njt <station name> <date> -> prints arrival times per headsign
@@ -65,7 +64,7 @@ if __name__ == "__main__":
     # Create the argument parser and add arguments
     parser = argparse.ArgumentParser(description="print out departure times for a rail stop")
     parser.add_argument("stop_name",
-                        metavar="stop name",
+                        metavar="stop_name",
                         help="name of the rail stop. Surround the name in quotes if it has spaces")
     parser.add_argument("-d",
                         "--date",
