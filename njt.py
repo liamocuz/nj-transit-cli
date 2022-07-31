@@ -62,9 +62,10 @@ if __name__ == "__main__":
     ZIP_PATH = "/tmp/njt/rail-data.zip"
     DIRECTORY_PATH = "/tmp/njt/rail-data/"
 
+    # Create the argument parser and add arguments
     parser = argparse.ArgumentParser(description="print out departure times for a rail stop")
     parser.add_argument("stop_name",
-                        metavar="stop_name",
+                        metavar="stop name",
                         help="name of the rail stop. If the name has spaces, surround the name in quotes")
     parser.add_argument("-d",
                         "--date",
@@ -77,12 +78,14 @@ if __name__ == "__main__":
                         help="force a download the NJ Transit Rail Data")
     args = parser.parse_args()
 
+    # Handle downloading and unzipping the rail data
     if not os.path.exists(DIRECTORY_PATH) or args.refresh:
         print("Downloading NJ Transit Rail Data")
         if not get_rail_data(RAIL_DATA_URL, ZIP_PATH, DIRECTORY_PATH):
             print("Unable to download rail data")
             sys.exit(1)
 
+    # Create the transit handler, which is the main handler for retrieving data
     transit = TransitHandler()
     transit.get_station_info(args.stop_name, args.date)
 
