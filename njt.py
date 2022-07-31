@@ -66,7 +66,7 @@ if __name__ == "__main__":
     parser = argparse.ArgumentParser(description="print out departure times for a rail stop")
     parser.add_argument("stop_name",
                         metavar="stop name",
-                        help="name of the rail stop. If the name has spaces, surround the name in quotes")
+                        help="name of the rail stop. Surround the name in quotes if it has spaces")
     parser.add_argument("-d",
                         "--date",
                         default=get_today_date(),
