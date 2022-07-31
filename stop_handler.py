@@ -43,5 +43,3 @@ class StopHandler(DataHandler):
         """Returns the Stop object given its stop id"""
         return self.dictionary[stop_id]
 
-    def build_trie(self):
-        trie = {}
