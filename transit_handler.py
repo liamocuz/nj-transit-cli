@@ -28,7 +28,8 @@ class TransitHandler:
 
         if station_name.lower() not in self.stops.dictionary:
             print(f"Unable to find the stop name \"{station_name}\". "
-                  f"Are you missing a space? Stop names with spaces in them must be surrounded in quotes.")
+                  f"Are you missing a space? "
+                  f"Stop names with spaces in them must be surrounded in quotes.")
             return
 
         stop_id: int = self.stops.get_stop_by_name(station_name).stop_id

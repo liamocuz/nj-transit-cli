@@ -42,4 +42,3 @@ class StopHandler(DataHandler):
     def get_stop_by_id(self, stop_id: int) -> Stop:
         """Returns the Stop object given its stop id"""
         return self.dictionary[stop_id]
-
