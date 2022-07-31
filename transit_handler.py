@@ -32,6 +32,11 @@ class TransitHandler:
                   f"Stop names with spaces in them must be surrounded in quotes.")
             return
 
+        if date not in self.calendar.dictionary:
+            print(f"Unable to find the date \"{date}\". "
+                  f"It must be in a YYYYMMDD format.")
+            return
+
         stop_id: int = self.stops.get_stop_by_name(station_name).stop_id
         service_ids: set = self.calendar.get_service_ids(date)
 
