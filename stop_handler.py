@@ -42,3 +42,7 @@ class StopHandler(DataHandler):
     def get_stop_by_id(self, stop_id: int) -> Stop:
         """Returns the Stop object given its stop id"""
         return self.dictionary[stop_id]
+
+    def get_stop_names(self) -> list:
+        """Returns a list of all stop names"""
+        return list(self.dataframe['stop_name'])
