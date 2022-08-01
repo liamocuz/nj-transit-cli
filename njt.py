@@ -1,4 +1,4 @@
-#!/usr/local/opt/python@3.10/bin/python3
+#!/usr/bin/python3
 
 """
 This is the main file for the njt-cli project
@@ -8,9 +8,9 @@ import sys
 import os
 import zipfile
 import argparse
-from datetime import datetime
 import requests
 from transit_handler import TransitHandler
+from dates_and_times import get_today_date, get_tomorrow_date
 
 
 def get_rail_data(url: str, zip_path: str, extract_path: str) -> bool:
@@ -41,20 +41,7 @@ def get_rail_data(url: str, zip_path: str, extract_path: str) -> bool:
     return True
 
 
-def get_today_date() -> str:
-    """Returns today's date in the form YYYYMMDD"""
-    return datetime.today().strftime("%Y%m%d")
-
-# TODO # pylint: disable=fixme
-#   1. Create an args parser for different flags
-#   2. Figure out how we want the cli to work, is it just going to be a single input or multiple
-#   2.1 Multiple will need some sort of dfs to find best route between two
-#   3. Filter times based upon current time of day
-#   4. Implement a trie when incomplete stops are put in
-
-# Input should be like ./transit <from name> <to name> <date> -> prints list of time
 # For single station ./njt <station name> <date> -> prints arrival times per headsign
-
 
 if __name__ == "__main__":
     RAIL_DATA_URL = "https://content.njtransit.com/public/developers-resources/rail_data.zip"
@@ -65,7 +52,7 @@ if __name__ == "__main__":
     parser = argparse.ArgumentParser(description="print out departure times for a rail stop")
     parser.add_argument("stop_name",
                         metavar="stop_name",
-                        help="name of the rail stop. Surround the name in quotes if it has spaces")
+                        help="name of the rail stop. surround the name in quotes if it has spaces")
     parser.add_argument("-d",
                         "--date",
                         default=get_today_date(),
@@ -75,6 +62,10 @@ if __name__ == "__main__":
                         "--refresh",
                         action="store_true",
                         help="force a download the NJ Transit Rail Data")
+    parser.add_argument("-t",
+                        "--tomorrow",
+                        action="store_true",
+                        help="gets times for tomorrow. this will override any date specified by -d")
     args = parser.parse_args()
 
     # Handle downloading and unzipping the rail data
@@ -86,6 +77,9 @@ if __name__ == "__main__":
 
     # Create the transit handler, which is the main handler for retrieving data
     transit = TransitHandler()
-    transit.get_station_info(args.stop_name, args.date)
+    transit.get_station_info(
+        name=str(args.stop_name),
+        date=get_tomorrow_date() if args.tomorrow else str(args.date)
+    )
 
     sys.exit(0)
