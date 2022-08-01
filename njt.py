@@ -77,6 +77,9 @@ if __name__ == "__main__":
 
     # Create the transit handler, which is the main handler for retrieving data
     transit = TransitHandler()
-    transit.get_station_info(str(args.stop_name), get_tomorrow_date() if args.tomorrow else str(args.date))
+    transit.get_station_info(
+        name=str(args.stop_name),
+        date=get_tomorrow_date() if args.tomorrow else str(args.date)
+    )
 
     sys.exit(0)
