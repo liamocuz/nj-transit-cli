@@ -1,4 +1,4 @@
-#!/usr/local/opt/python@3.10/bin/python3
+#!/usr/bin/python3
 
 """
 This is the main file for the njt-cli project
@@ -8,9 +8,9 @@ import sys
 import os
 import zipfile
 import argparse
-from datetime import datetime
 import requests
 from transit_handler import TransitHandler
+from dates_and_times import get_today_date
 
 
 def get_rail_data(url: str, zip_path: str, extract_path: str) -> bool:
@@ -41,20 +41,7 @@ def get_rail_data(url: str, zip_path: str, extract_path: str) -> bool:
     return True
 
 
-def get_today_date() -> str:
-    """Returns today's date in the form YYYYMMDD"""
-    return datetime.today().strftime("%Y%m%d")
-
-# TODO # pylint: disable=fixme
-#   1. Create an args parser for different flags
-#   2. Figure out how we want the cli to work, is it just going to be a single input or multiple
-#   2.1 Multiple will need some sort of dfs to find best route between two
-#   3. Filter times based upon current time of day
-#   4. Implement a trie when incomplete stops are put in
-
-# Input should be like ./transit <from name> <to name> <date> -> prints list of time
 # For single station ./njt <station name> <date> -> prints arrival times per headsign
-
 
 if __name__ == "__main__":
     RAIL_DATA_URL = "https://content.njtransit.com/public/developers-resources/rail_data.zip"
@@ -86,6 +73,6 @@ if __name__ == "__main__":
 
     # Create the transit handler, which is the main handler for retrieving data
     transit = TransitHandler()
-    transit.get_station_info(args.stop_name, args.date)
+    transit.get_station_info(str(args.stop_name), str(args.date))
 
     sys.exit(0)
