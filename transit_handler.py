@@ -8,6 +8,7 @@ from trip_handler import TripHandler
 from stop_time_handler import StopTimeHandler
 from route_handler import RouteHandler
 from calendar_handler import CalendarHandler
+from dates_and_times import get_pretty_date, get_time, get_pretty_time
 
 # Constants
 DIRECTORY_PATH = "/tmp/njt/rail-data/"
@@ -27,15 +28,14 @@ class TransitHandler:
     def get_station_info(self, name: str, date: str):
         """Prints the arrival times for a station stop per headsign for given date"""
 
-        stop_name: str = self.get_name_from_trie(str(name))
+        stop_name: str = self.get_name_from_trie(name)
         if isinstance(stop_name, list):
             print(f"Unable to find a unique stop name starting with \"{name}\". "
                   f"Perhaps you meant one of these?\n")
             for stop in stop_name:
                 print(stop.upper())
             return
-
-        if not stop_name or stop_name.lower() not in self.stops.dictionary:
+        elif not stop_name or stop_name.lower() not in self.stops.dictionary:
             print(f"Unable to find stop name \"{name}\". "
                   f"Are you missing a space? "
                   f"Stop names with spaces in them must be surrounded in quotes.")
@@ -43,7 +43,8 @@ class TransitHandler:
 
         if date not in self.calendar.dictionary:
             print(f"Unable to find the date \"{date}\". "
-                  f"It must be in a YYYYMMDD format.")
+                  f"It must be in a YYYYMMDD format. "
+                  f"Ex: September 15, 2022 as 20220915")
             return
 
         stop_id: int = self.stops.get_stop_by_name(stop_name).stop_id
@@ -52,18 +53,25 @@ class TransitHandler:
         stop_times: dict = self.stop_times.get_trips(stop_id)
         valid_stop_times: list = self.filter_trips(stop_times, service_ids)
 
-        trip_info = self.build_time_info(valid_stop_times)
+        time_info: dict = self.build_time_info(valid_stop_times)
 
-        print(f"From {stop_name.upper()} on {date}\n")
-        for headsign, station_info in trip_info.items():
+        pretty_date: str = get_pretty_date(date)
+        check_time: str = get_time(date)
+
+        print(f"From {stop_name.upper()} on {pretty_date}\n")
+        for headsign, station_info in time_info.items():
             # Don't need to print times for the current station
             if headsign.lower() == stop_name.lower():
                 continue
             print(f"To {headsign}")
-            station_info.sort(key=lambda x: x.departure_time)
+            station_info.sort(key=lambda x: x.departure_time)  # sort departure times in order
             for stop_time in station_info:
-                print(stop_time.departure_time)
+                # Only print times that occur after the check time
+                if stop_time.departure_time > check_time:
+                    print(get_pretty_time(stop_time.departure_time))
             print()
+
+        return
 
     def filter_trips(self, stop_times: dict, service_ids: set) -> list:
         """Filters the trips and returns a list of valid StopTime objects"""
@@ -104,7 +112,8 @@ class TransitHandler:
         """
         Gets the station name from the trie
         The given name can be an unfinished name
-        If it is unique enough it will return the full station name
+        If it is unique enough it will return the full station name string
+        If multiple stations are matched, a list of those stations will be returned
         """
         level = self.trie
 
