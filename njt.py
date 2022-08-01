@@ -10,7 +10,7 @@ import zipfile
 import argparse
 import requests
 from transit_handler import TransitHandler
-from dates_and_times import get_today_date
+from dates_and_times import get_today_date, get_tomorrow_date
 
 
 def get_rail_data(url: str, zip_path: str, extract_path: str) -> bool:
@@ -52,7 +52,7 @@ if __name__ == "__main__":
     parser = argparse.ArgumentParser(description="print out departure times for a rail stop")
     parser.add_argument("stop_name",
                         metavar="stop_name",
-                        help="name of the rail stop. Surround the name in quotes if it has spaces")
+                        help="name of the rail stop. surround the name in quotes if it has spaces")
     parser.add_argument("-d",
                         "--date",
                         default=get_today_date(),
@@ -62,6 +62,10 @@ if __name__ == "__main__":
                         "--refresh",
                         action="store_true",
                         help="force a download the NJ Transit Rail Data")
+    parser.add_argument("-t",
+                        "--tomorrow",
+                        action="store_true",
+                        help="gets times for tomorrow. this will override any date specified by -d")
     args = parser.parse_args()
 
     # Handle downloading and unzipping the rail data
@@ -73,6 +77,6 @@ if __name__ == "__main__":
 
     # Create the transit handler, which is the main handler for retrieving data
     transit = TransitHandler()
-    transit.get_station_info(str(args.stop_name), str(args.date))
+    transit.get_station_info(str(args.stop_name), get_tomorrow_date() if args.tomorrow else str(args.date))
 
     sys.exit(0)
