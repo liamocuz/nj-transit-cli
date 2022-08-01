@@ -2,12 +2,17 @@
 This file handles all date and time related methods
 """
 
-from datetime import datetime, time
+from datetime import datetime, time, timedelta
 
 
 def get_today_date() -> str:
     """Returns today's date in YYYYMMDD format"""
     return datetime.today().strftime("%Y%m%d")
+
+
+def get_tomorrow_date() -> str:
+    """Returns tomorrow's date in YYYYMMDD format"""
+    return (datetime.today() + timedelta(days=1)).strftime("%Y%m%d")
 
 
 def get_datetime(given_date: str):
