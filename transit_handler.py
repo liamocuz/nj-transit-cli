@@ -35,7 +35,8 @@ class TransitHandler:
             for stop in stop_name:
                 print(stop.upper())
             return
-        elif not stop_name or stop_name.lower() not in self.stops.dictionary:
+
+        if not stop_name or stop_name.lower() not in self.stops.dictionary:
             print(f"Unable to find stop name \"{name}\". "
                   f"Are you missing a space? "
                   f"Stop names with spaces in them must be surrounded in quotes.")

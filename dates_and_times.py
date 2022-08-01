@@ -21,12 +21,11 @@ def get_datetime(given_date: str):
     try:
         if given_date == get_today_date():
             return datetime.today()
-        else:
-            return datetime(year=int(given_date[0:4]),
-                            month=int(given_date[4:6]),
-                            day=int(given_date[6:8]))
-    except ValueError:
-        raise ValueError(f"Unable to parse given date: {given_date}")
+        return datetime(year=int(given_date[0:4]),
+                        month=int(given_date[4:6]),
+                        day=int(given_date[6:8]))
+    except ValueError as exc:
+        raise ValueError(f"Unable to parse given date: {given_date}") from exc
 
 
 def get_pretty_date(given_date: str) -> str:
@@ -46,4 +45,3 @@ def get_pretty_time(given_time: str) -> str:
     tokens[0] %= 24
 
     return time(*tokens).strftime("%I:%M %p")
-
