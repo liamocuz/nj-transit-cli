@@ -28,7 +28,7 @@ class TransitHandler:
         """Prints the arrival times for a station stop per headsign for given date"""
 
         stop_name: str = self.get_name_from_trie(str(name))
-        if type(stop_name) == list:
+        if isinstance(stop_name, list):
             print(f"Unable to find a unique stop name starting with \"{name}\". "
                   f"Perhaps you meant one of these?\n")
             for stop in stop_name:
