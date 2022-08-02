@@ -25,7 +25,7 @@ class TransitHandler:
         self.calendar = CalendarHandler(DIRECTORY_PATH + "calendar_dates.txt")
         self.trie = self.build_trie()
 
-    def get_station_info(self, name: str, date: str):
+    def get_station_info(self, name: str, date: str, list_length: int):
         """Prints the arrival times for a station stop per headsign for given date"""
 
         stop_name: str = self.get_name_from_trie(name)
@@ -65,11 +65,15 @@ class TransitHandler:
             if headsign.lower() == stop_name.lower():
                 continue
             print(f"To {headsign}")
+
+            # Sort and filter the objects
             station_info.sort(key=lambda x: x.departure_time)  # sort departure times in order
-            for stop_time in station_info:
-                # Only print times that occur after the check time
-                if stop_time.departure_time > check_time:
-                    print(get_pretty_time(stop_time.departure_time))
+            station_info = [stop_time for stop_time in station_info if stop_time.departure_time > check_time]
+
+            # Print out the objects
+            for idx in range(min(list_length, len(station_info))):
+                stop_time = station_info[idx]
+                print(get_pretty_time(stop_time.departure_time))
             print()
 
         return

@@ -1,4 +1,4 @@
-#!/usr/bin/python3
+#!/usr/local/opt/python@3.10/bin/python3
 
 """
 This is the main file for the njt-cli project
@@ -52,6 +52,7 @@ if __name__ == "__main__":
     parser = argparse.ArgumentParser(description="print out departure times for a rail stop")
     parser.add_argument("stop_name",
                         metavar="stop_name",
+                        type=str,
                         help="name of the rail stop. surround the name in quotes if it has spaces")
     parser.add_argument("-d",
                         "--date",
@@ -66,6 +67,12 @@ if __name__ == "__main__":
                         "--tomorrow",
                         action="store_true",
                         help="gets times for tomorrow. this will override any date specified by -d")
+    parser.add_argument("-l",
+                        "--list",
+                        nargs='?',
+                        type=int,
+                        default=float("inf"),
+                        help="number of times to list per headsign")
     args = parser.parse_args()
 
     # Handle downloading and unzipping the rail data
@@ -79,7 +86,8 @@ if __name__ == "__main__":
     transit = TransitHandler()
     transit.get_station_info(
         name=str(args.stop_name),
-        date=get_tomorrow_date() if args.tomorrow else str(args.date)
+        date=get_tomorrow_date() if args.tomorrow else str(args.date),
+        list_length=args.list
     )
 
     sys.exit(0)
