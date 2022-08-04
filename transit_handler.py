@@ -8,7 +8,9 @@ from trip_handler import TripHandler
 from stop_time_handler import StopTimeHandler
 from route_handler import RouteHandler
 from calendar_handler import CalendarHandler
-from dates_and_times import get_pretty_date, get_time, get_pretty_time
+from dates_and_times import get_datetime, get_pretty_date, \
+    get_pretty_time, get_iso_time, get_njt_date, get_today_date, \
+    get_iso_date
 
 # Constants
 DIRECTORY_PATH = "/tmp/njt/rail-data/"
@@ -17,17 +19,19 @@ DIRECTORY_PATH = "/tmp/njt/rail-data/"
 class TransitHandler:
     """This class handles importing data sources to construct routes and stop info"""
 
-    def __init__(self):
+    def __init__(self, date: str, time: str):
         self.stops = StopHandler(DIRECTORY_PATH + "stops.txt")
         self.stop_times = StopTimeHandler(DIRECTORY_PATH + "stop_times.txt")
         self.trips = TripHandler(DIRECTORY_PATH + "trips.txt")
         self.routes = RouteHandler(DIRECTORY_PATH + "routes.txt")
         self.calendar = CalendarHandler(DIRECTORY_PATH + "calendar_dates.txt")
         self.trie = self.build_trie()
+        self.datetime = get_datetime(date, time)
 
-    def get_station_info(self, name: str, date: str):
+    def get_station_info(self, name: str, list_length: int):
         """Prints the arrival times for a station stop per headsign for given date"""
 
+        # Attempt to get the stop_name from the trie
         stop_name: str = self.get_name_from_trie(name)
         if isinstance(stop_name, list):
             print(f"Unable to find a unique stop name starting with \"{name}\". "
@@ -42,37 +46,44 @@ class TransitHandler:
                   f"Stop names with spaces in them must be surrounded in quotes.")
             return
 
-        if date not in self.calendar.dictionary:
-            print(f"Unable to find the date \"{date}\". "
-                  f"It must be in a YYYYMMDD format. "
-                  f"Ex: September 15, 2022 as 20220915")
+        njt_date: str = get_njt_date(self.datetime)
+        if njt_date not in self.calendar.dictionary:
+            print(f"Unable to find the date \"{get_iso_date(self.datetime)}\". "
+                  f"The date should be on or after {get_today_date()}")
             return
 
         stop_id: int = self.stops.get_stop_by_name(stop_name).stop_id
-        service_ids: set = self.calendar.get_service_ids(date)
+        service_ids: set = self.calendar.get_service_ids(njt_date)
 
-        stop_times: dict = self.stop_times.get_trips(stop_id)
-        valid_stop_times: list = self.filter_trips(stop_times, service_ids)
+        trips: dict = self.stop_times.get_trips(stop_id)
+        valid_stop_times: list = self.filter_trips(trips, service_ids)
 
-        time_info: dict = self.build_time_info(valid_stop_times)
+        stop_time_info: dict = self.build_time_info(valid_stop_times)
 
-        pretty_date: str = get_pretty_date(date)
-        check_time: str = get_time(date)
+        self.print_stop_info(stop_name, stop_time_info, list_length)
+        return
 
-        print(f"From {stop_name.upper()} on {pretty_date}\n")
-        for headsign, station_info in time_info.items():
+    def print_stop_info(self, stop_name: str, stop_time_info: dict, list_length: int):
+        """Prints out rail stop information"""
+
+        check_time = get_iso_time(self.datetime)
+        print(f"From {stop_name.upper()} on {get_pretty_date(self.datetime)}\n")
+        for headsign, station_info in stop_time_info.items():
             # Don't need to print times for the current station
             if headsign.lower() == stop_name.lower():
                 continue
             print(f"To {headsign}")
-            station_info.sort(key=lambda x: x.departure_time)  # sort departure times in order
-            for stop_time in station_info:
-                # Only print times that occur after the check time
-                if stop_time.departure_time > check_time:
-                    print(get_pretty_time(stop_time.departure_time))
-            print()
 
-        return
+            # Sort and filter the objects
+            station_info.sort(key=lambda x: x.departure_time)  # sort departure times in order
+            station_info = [stop_time for stop_time in station_info
+                            if stop_time.departure_time > check_time]
+
+            # Print out the objects
+            for idx in range(min(list_length, len(station_info))):
+                stop_time = station_info[idx]
+                print(f"{get_pretty_time(stop_time.departure_time)}")
+            print()
 
     def filter_trips(self, stop_times: dict, service_ids: set) -> list:
         """Filters the trips and returns a list of valid StopTime objects"""

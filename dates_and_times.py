@@ -2,51 +2,90 @@
 This file handles all date and time related methods
 """
 
-from datetime import datetime, time, timedelta
+from datetime import datetime, time, date, timedelta
 
 
 def get_today_date() -> str:
-    """Returns today's date in YYYYMMDD format"""
-    return datetime.today().strftime("%Y%m%d")
+    """Returns today's date in YYYY-MM-DD ISO format"""
+    return datetime.today().strftime("%Y-%m-%d")
 
 
 def get_tomorrow_date() -> str:
     """Returns tomorrow's date in YYYYMMDD format"""
-    return (datetime.today() + timedelta(days=1)).strftime("%Y%m%d")
+    return (datetime.today() + timedelta(days=1)).date().isoformat()
 
 
-def get_datetime(given_date: str):
+def get_datetime(given_date: str, given_time: str) -> datetime:
     """
-    Return a datetime object of the given_date
-    Has checks to see if it is the current day or not
-    """
-    if len(given_date) != 8:
-        raise ValueError(f"Unable to parse given date: {given_date}")
+    Get the proper datetime given a date and time
 
+    Date will be in YYYY-MM-DD format
+    Time will be in HH:MM format
+    """
     try:
-        if given_date == get_today_date():
-            return datetime.today()
-        return datetime(year=int(given_date[0:4]),
-                        month=int(given_date[4:6]),
-                        day=int(given_date[6:8]))
+        if given_date.lower() == "tomorrow":
+            new_date = date.fromisoformat(get_tomorrow_date())
+        else:
+            new_date = date.fromisoformat(given_date)
+
     except ValueError as exc:
-        raise ValueError(f"Unable to parse given date: {given_date}") from exc
+        raise ValueError(f"Unable to parse given date: {given_date}. "
+                         f"It must be in YYYY-MM-DD format") from exc
+    try:
+        cleaned_time = cleanup_time(given_time + ":00")
+        new_time = time.fromisoformat(cleaned_time)
+    except ValueError as exc:
+        raise ValueError(f"Unable to parse given time: {given_time}. "
+                         f"It must be in HH:MM format") from exc
+
+    return datetime.combine(date=new_date, time=new_time)
 
 
-def get_pretty_date(given_date: str) -> str:
-    """Returns the datetime in a human-readable format"""
-    return get_datetime(given_date).strftime("%A, %d. %B %Y %I:%M %p")
+def get_pretty_date(given_datetime: datetime) -> str:
+    """
+    Given a datetime, return a human-readable time
+
+    A: weekday as locale's full name
+    d: day of the month
+    B: month as locale's full name
+    Y: year with century as decimal
+    I: hour (12-hour clock) as a zero-padded decimal number
+    M: minute as a zero-padded decimal number
+    p: locale’s equivalent of either AM or PM
+    """
+    return given_datetime.strftime("%A, %d. %B %Y %I:%M%p")
 
 
-def get_time(given_date: str) -> str:
-    """Returns the time given a date in a HH:MM:SS format"""
-    return get_datetime(given_date).strftime("%H:%M:%S")
+def get_pretty_time(iso_time: str) -> str:
+    """Given an ISO format HH:MM:SS, return the time in 12hr HH:MM AM/PM format"""
+    return time.fromisoformat(cleanup_time(iso_time)).strftime("%I:%M %p")
 
 
-def get_pretty_time(given_time: str) -> str:
-    """Returns the time in a human-readable format given a HH:MM:SS format"""
+def get_iso_time(given_datetime: datetime) -> str:
+    """Get the ISO HH:MM:SS time given a datetime"""
+    return given_datetime.time().isoformat()
+
+
+def get_iso_date(given_datetime: datetime) -> str:
+    """Get the ISO YYYY-MM-DD date given a datetime"""
+    return given_datetime.date().isoformat()
+
+
+def get_njt_date(given_datetime: datetime) -> str:
+    """Get the date in a YYYYMMDD format"""
+    return given_datetime.strftime("%Y%m%d")
+
+
+def cleanup_time(given_time: str) -> str:
+    """
+    This function exists to clean the hours of an ISO HH:MM:SS time
+    NJ Transit has times that spill over into the next day
+    EX: 1:30 AM the next day as 25:30:00
+    """
+    if len(given_time) != 8:
+        raise ValueError
     tokens = given_time.split(':')
     tokens = [int(token) for token in tokens]
     tokens[0] %= 24
 
-    return time(*tokens).strftime("%I:%M %p")
+    return time(*tokens).isoformat()
