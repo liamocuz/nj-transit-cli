@@ -29,7 +29,7 @@ class TransitHandler:
         self.datetime = get_datetime(date, time)
 
     def get_station_info(self, name: str, list_length: int):
-        """Prints the arrival times for a station stop per headsign for given date"""
+        """Prints the departure times for a station stop per headsign for given date"""
 
         # Attempt to get the stop_name from the trie
         stop_name: str = self.get_name_from_trie(name)
@@ -46,18 +46,23 @@ class TransitHandler:
                   f"Stop names with spaces in them must be surrounded in quotes.")
             return
 
+        # Get the proper YYYYMMDD date that can be hashed
         njt_date: str = get_njt_date(self.datetime)
         if njt_date not in self.calendar.dictionary:
             print(f"Unable to find the date \"{get_iso_date(self.datetime)}\". "
                   f"The date should be on or after {get_today_date()}")
             return
 
+        # Get the stop_id from the name
         stop_id: int = self.stops.get_stop_by_name(stop_name).stop_id
+        # Get the service_ids from the date
         service_ids: set = self.calendar.get_service_ids(njt_date)
 
+        # Get the trips given the name and service_ids
         trips: dict = self.stop_times.get_trips(stop_id)
         valid_stop_times: list = self.filter_trips(trips, service_ids)
 
+        # Get the stop_times
         stop_time_info: dict = self.build_time_info(valid_stop_times)
 
         self.print_stop_info(stop_name, stop_time_info, list_length)

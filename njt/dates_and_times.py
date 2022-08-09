@@ -6,12 +6,12 @@ from datetime import datetime, time, date, timedelta
 
 
 def get_today_date() -> str:
-    """Returns today's date in YYYY-MM-DD ISO format"""
+    """Returns today's date in YYYY-MM-DD format"""
     return datetime.today().strftime("%Y-%m-%d")
 
 
 def get_tomorrow_date() -> str:
-    """Returns tomorrow's date in YYYYMMDD format"""
+    """Returns tomorrow's date in YYYY-MM-DD format"""
     return (datetime.today() + timedelta(days=1)).date().isoformat()
 
 
@@ -32,8 +32,11 @@ def get_datetime(given_date: str, given_time: str) -> datetime:
         raise ValueError(f"Unable to parse given date: {given_date}. "
                          f"It must be in YYYY-MM-DD format") from exc
     try:
-        cleaned_time = cleanup_time(given_time + ":00")
-        new_time = time.fromisoformat(cleaned_time)
+        if given_time.lower() == "now":
+            new_time = time.fromisoformat(datetime.now().strftime("%H:%M:%S"))
+        else:
+            cleaned_time = cleanup_time(given_time + ":00")
+            new_time = time.fromisoformat(cleaned_time)
     except ValueError as exc:
         raise ValueError(f"Unable to parse given time: {given_time}. "
                          f"It must be in HH:MM format") from exc
@@ -57,17 +60,17 @@ def get_pretty_date(given_datetime: datetime) -> str:
 
 
 def get_pretty_time(iso_time: str) -> str:
-    """Given an ISO format HH:MM:SS, return the time in 12hr HH:MM AM/PM format"""
+    """Given a time format HH:MM:SS, return the time in 12hr HH:MM AM/PM format"""
     return time.fromisoformat(cleanup_time(iso_time)).strftime("%I:%M %p")
 
 
 def get_iso_time(given_datetime: datetime) -> str:
-    """Get the ISO HH:MM:SS time given a datetime"""
+    """Get the HH:MM:SS time given a datetime"""
     return given_datetime.time().isoformat()
 
 
 def get_iso_date(given_datetime: datetime) -> str:
-    """Get the ISO YYYY-MM-DD date given a datetime"""
+    """Get the YYYY-MM-DD date given a datetime"""
     return given_datetime.date().isoformat()
 
 
@@ -78,7 +81,7 @@ def get_njt_date(given_datetime: datetime) -> str:
 
 def cleanup_time(given_time: str) -> str:
     """
-    This function exists to clean the hours of an ISO HH:MM:SS time
+    This function exists to clean the hours of an HH:MM:SS time
     NJ Transit has times that spill over into the next day
     EX: 1:30 AM the next day as 25:30:00
     """

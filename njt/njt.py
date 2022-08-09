@@ -2,6 +2,7 @@
 
 """
 This is the main file for the njt-cli project
+It handles arguments, downloading data, and data retrieval
 """
 
 import sys
@@ -44,6 +45,7 @@ def get_rail_data(url: str, zip_path: str, extract_path: str) -> bool:
 # For single station ./njt <station name> <date> -> prints arrival times per headsign
 
 if __name__ == "__main__":
+    # Constants for downloading data
     RAIL_DATA_URL = "https://content.njtransit.com/public/developers-resources/rail_data.zip"
     ZIP_PATH = "/tmp/njt/rail-data.zip"
     DIRECTORY_PATH = "/tmp/njt/rail-data/"
@@ -51,8 +53,8 @@ if __name__ == "__main__":
     # Create the argument parser and add arguments
     parser = argparse.ArgumentParser(description="print out departure times for a rail stop")
     parser.add_argument(
-        "names",
-        metavar="names",
+        "stop_names",
+        metavar="stop_names",
         type=str,
         nargs='+',
         help="name of the rail stop. surround the name in quotes if it has spaces"
@@ -105,9 +107,9 @@ if __name__ == "__main__":
         transit = TransitHandler(date=str(args.date), time=str(args.time))
     except ValueError as exc:
         print(exc)
-        sys.exit(0)
+        sys.exit(1)
 
-    for name in args.names:
+    for name in args.stop_names:
         transit.get_station_info(
             name=str(name),
             list_length=int(args.number)
