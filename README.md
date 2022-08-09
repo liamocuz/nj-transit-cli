@@ -4,7 +4,8 @@
 
 This project creates a Command Line Interface for NJ Transit's rail data.
 Given a station stop name, the departure times will be 
-displayed per headsign that the stop services.
+displayed per headsign that the stop services. 
+This program does not find routes between two stations.
 
 ## How to Use
 
