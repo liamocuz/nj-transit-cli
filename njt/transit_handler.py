@@ -143,5 +143,9 @@ class TransitHandler:
             return None
         if len(level['*']) == 1:
             return level['*'][0]
+        if name in level['*']:
+            for idx, stop in enumerate(level['*']):
+                if stop == name:
+                    return level['*'][idx]
 
         return level['*']
